@@ -21,6 +21,11 @@
     <button id="joinGame" class="btn">Присоединиться</button>
     <div id="board" class="board"></div>
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tg = window.Telegram.WebApp;
+            tg.expand(); // Разворачиваем WebApp на весь экран
+            console.log("Telegram WebApp API загружен");
+        });
         const ws = new WebSocket("wss://https://sea-battle-backend-fite.onrender.com/ws/game");
         const boardElement = document.getElementById("board");
         function createBoard() {
