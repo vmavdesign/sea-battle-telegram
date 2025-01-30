@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Морской бой</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background: linear-gradient(to bottom, #87CEEB, #1E90FF); }
+        .board { display: grid; grid-template-columns: repeat(10, 30px); grid-gap: 2px; margin: 20px auto; width: 320px; }
+        .cell { width: 30px; height: 30px; background: #ddd; border: 1px solid #aaa; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .hit { background: red; }
+        .miss { background: lightblue; }
+        .sunk { background: black; }
+        .btn { padding: 10px 15px; margin: 10px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Морской бой</h1>
+    <button id="startGame" class="btn">Создать игру</button>
+    <button id="joinGame" class="btn">Присоединиться</button>
+    <div id="board" class="board"></div>
+    <script>
+        const ws = new WebSocket("wss://YOUR_SERVER_IP/ws/game");
+        const boardElement = document.getElementById("board");
+        function createBoard() {
+            for (let y = 0; y < 10; y++) {
+                for (let x = 0; x < 10; x++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    cell.addEventListener("click", () => sendShot(x, y));
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+        function sendShot(x, y) { ws.send(JSON.stringify({ x, y })); }
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.result === "Попадание!") document.querySelector(`[data-x="${data.x}"][data-y="${data.y}"]`).classList.add("hit");
+            if (data.result === "Мимо!") document.querySelector(`[data-x="${data.x}"][data-y="${data.y}"]`).classList.add("miss");
+        };
+        createBoard();
+    </script>
+</body>
+</html>
