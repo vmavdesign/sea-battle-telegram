@@ -21,7 +21,7 @@
     <button id="joinGame" class="btn">Присоединиться</button>
     <div id="board" class="board"></div>
     <script>
-        const ws = new WebSocket("wss://YOUR_SERVER_IP/ws/game");
+        const ws = new WebSocket("wss://https://sea-battle-backend-fite.onrender.com/ws/game");
         const boardElement = document.getElementById("board");
         function createBoard() {
             for (let y = 0; y < 10; y++) {
